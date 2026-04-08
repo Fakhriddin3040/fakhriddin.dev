@@ -1,0 +1,64 @@
+<h1 class="h1">Career</h1>
+<p class="sub">Timeline view: roles, responsibilities, and the systems behind them.</p>
+
+@if (vm$ | async; as vm) {
+  @if (vm.status === 'loading') {
+    <app-loading-skeleton [count]="3" />
+  } @else if (vm.status === 'error') {
+    <app-error-panel [message]="vm.message" />
+  } @else {
+    <div class="timeline panel">
+        @for (c of vm.data; track c.id) {
+            <div class="item">
+                <div class="rail">
+                    <div class="dot"></div>
+                    <div class="line"></div>
+                </div>
+                <div class="body">
+                    <div class="top">
+                        <div class="role">{{ c.role }}</div>
+                        <div class="range">{{ c.startDate }} → {{ c.endDate || 'present' }}</div>
+                    </div>
+
+                    @if(c.location) {
+                        <div class="company">{{ c.company }} <span class="loc">· {{ c.location }}</span></div>
+                    }
+
+                    <div class="split">
+                        <div>
+                            <div class="k">responsibilities</div>
+                            <ul class="list">
+                                @for (r of c.responsibilities; track $index) {
+                                    <li>{{ r }}</li>
+                                }
+                            </ul>
+                        </div>
+                        <div>
+                            <div class="k">achievements</div>
+                            <ul class="list">
+                                @for (a of c.achievements; track $index) {
+                                    <li>{{ a }}</li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="k">tech</div>
+                    <div class="tags">
+                        @for(t of c.technologies; track $index) {
+                            <app-pill [text]="t" tone="accent" />
+                        }
+                    </div>
+
+                    <div class="k">related projects</div>
+                    <div class="projects">
+                        @for(pid of c.projectIds; track pid) {
+                            <a class="plink" [routerLink]="['/projects', pid]">{{ pid }}</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+  }
+}

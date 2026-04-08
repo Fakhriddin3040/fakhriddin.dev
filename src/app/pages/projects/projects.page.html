@@ -1,0 +1,59 @@
+<div class="head">
+  <div>
+    <h1 class="h1">Projects</h1>
+    <p class="sub">Services, systems, and tools. Click into a project for endpoints, architecture, and logs.</p>
+  </div>
+
+  <div class="filters panel-subtle">
+    <label>
+      <span class="lbl">tech</span>
+      <input [(ngModel)]="tech" (keydown.enter)="applyFilters()" placeholder="e.g. PostgreSQL" />
+    </label>
+    <label>
+      <span class="lbl">status</span>
+      <select [(ngModel)]="status" (change)="applyFilters()">
+        <option value="">all</option>
+        <option value="active">active</option>
+        <option value="archived">archived</option>
+      </select>
+    </label>
+    <button type="button" class="btn" (click)="applyFilters()">apply</button>
+  </div>
+</div>
+
+@if (vm$ | async; as vm) {
+  @if (vm.status === 'loading') {
+    <app-loading-skeleton [count]="6" />
+  } @else if (vm.status === 'error') {
+    <app-error-panel [message]="vm.message" />
+  } @else {
+    <div class="grid">
+        @for (p of vm.data.projects; track $index) {
+            <a class="card panel" [routerLink]="['/projects', p.id]">
+                <div class="row">
+                    <div class="name">{{ p.name }}</div>
+                    <app-status-badge
+                            [label]="p.status"
+                            [tone]="p.status === 'active' ? 'good' : 'neutral'"
+                    />
+                </div>
+                <div class="desc">{{ p.description }}</div>
+                <div class="tags">
+                    @for (t of p.techStack; track $index) {
+                        <app-pill [text]="t" tone="accent" />
+                    }
+                </div>
+            </a>
+        }
+    </div>
+
+    <div class="panel-subtle foot">
+      <div class="k">tech index</div>
+      <div class="idx">
+          @for (t of vm.data.techIndex; track $index) {
+              <span class="kbd">{{ t }}</span>
+          }
+      </div>
+    </div>
+  }
+}

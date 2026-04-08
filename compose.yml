@@ -1,0 +1,16 @@
+services:
+  app:
+    build: .
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${TRAEFIK_LABEL_SERVICE}.rule=Host(`${DOMAIN_URL}`)"
+      - "traefik.http.routers.${TRAEFIK_LABEL_SERVICE}.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.${TRAEFIK_LABEL_SERVICE}.entrypoints=web,websecure"
+      - "traefik.http.services.${TRAEFIK_LABEL_SERVICE}.loadbalancer.server.port=80"
+      - "traefik.http.routers.erp.middlewares=error-handler@file"
+
+networks:
+  traefik:
+    external: true
+    name: traefik

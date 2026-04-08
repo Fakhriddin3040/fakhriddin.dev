@@ -1,0 +1,28 @@
+<h1 class="h1">Skills</h1>
+<p class="sub">Grouped as a contract: category → skills. Each skill references related projects.</p>
+
+@if (vm$ | async; as vm) {
+  @if (vm.status === 'loading') {
+    <app-loading-skeleton [count]="6" />
+  } @else if (vm.status === 'error') {
+    <app-error-panel [message]="vm.message" />
+  } @else {
+    <div class="grid">
+        @for (kv of vm.data | keyvalue; track $index) {
+            <div class="panel cat">
+                <div class="k">{{ kv.key }}</div>
+                <div class="hr"></div>
+                @for (s of kv.value; track $index) {
+                    <div class="row">
+                        <div class="name">{{ s.name }}</div>
+                        <div class="meta">
+                            <app-pill [text]="s.level" [tone]="s.level === 'expert' ? 'good' : 'neutral'" />
+                            <span class="yrs">{{ s.years }}y</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+  }
+}

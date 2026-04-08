@@ -1,0 +1,48 @@
+<a class="back" routerLink="/projects">← back to projects</a>
+
+@if (vm$ | async; as vm) {
+  @if (vm.status === 'loading') {
+    <app-loading-skeleton [count]="3" />
+  } @else if (vm.status === 'error') {
+    <app-error-panel [message]="vm.message" />
+  } @else {
+    <div class="head panel">
+      <div class="title">
+        <div class="name">{{ vm.data.name }}</div>
+        <div class="desc">{{ vm.data.description }}</div>
+      </div>
+      <div class="tags">
+          @for(t of vm.data.techStack; track $index) {
+              <app-pill [text]="t" tone="accent" />
+          }
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="panel section">
+        <div class="k">architecture</div>
+        <div class="hr"></div>
+          @for (a of vm.data.architecture; track $index) {
+              <div class="arch">
+                  <div class="an">{{ a.name }}</div>
+                  <div class="ad">{{ a.description }}</div>
+              </div>
+          }
+      </div>
+
+      <div class="panel section">
+        <div class="k">endpoints</div>
+        <div class="hr"></div>
+          @for(e of vm.data.endpoints; track $index) {
+              <div class="ep">
+                  <span class="m">{{ e.method }}</span>
+                  <span class="p">{{ e.path }}</span>
+                  <span class="d">{{ e.description }}</span>
+              </div>
+          }
+      </div>
+    </div>
+
+    <app-log-stream title="recent logs" [lines]="vm.data.recentLogs" />
+  }
+}

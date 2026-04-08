@@ -1,0 +1,42 @@
+<h1 class="h1">Engineer Dashboard</h1>
+<p class="sub">
+  A portfolio that reads like an internal tool: typed data, mock APIs, metrics, and logs.
+</p>
+
+@if (vm$ | async; as vm) {
+  @if (vm.status === 'loading') {
+    <app-loading-skeleton [count]="6" />
+  } @else if (vm.status === 'error') {
+    <app-error-panel [message]="vm.message" />
+  } @else {
+    <div class="grid">
+      <app-metric-card title="Years Experience" [value]="vm.data.profile.metrics.yearsExperience" hint="approximate" />
+      <app-metric-card title="Total Projects" [value]="vm.data.profile.metrics.projectCount" hint="curated selection" />
+      <app-metric-card title="Services Owned" [value]="vm.data.profile.metrics.servicesOwned" hint="prod + internal" />
+      <app-metric-card title="Incidents Resolved" [value]="vm.data.profile.metrics.incidentsResolved" hint="postmortems + fixes" />
+      <app-metric-card title="Uptime" [value]="vm.data.system.uptime" hint="mock system status" />
+      <app-metric-card
+        title="Services Healthy"
+        [value]="vm.data.computed.healthyServices + '/' + vm.data.computed.totalServices"
+        hint="derived from /api/system/status"
+      />
+    </div>
+
+    <div class="two">
+      <div class="panel about">
+        <div class="k">profile</div>
+        <div class="name">{{ vm.data.profile.name }}</div>
+        <div class="title">{{ vm.data.profile.title }}</div>
+        <div class="hr"></div>
+        <div class="summary">{{ vm.data.profile.summary }}</div>
+      </div>
+
+      <app-log-stream
+        title="recent logs"
+        subtitle="from /api/system/status"
+        [entries]="vm.data.system.recentLogs"
+      />
+    </div>
+  }
+}
+

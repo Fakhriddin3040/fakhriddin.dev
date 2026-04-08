@@ -1,0 +1,40 @@
+<h1 class="h1">System Status</h1>
+<p class="sub">Fake observability data: services, latency, error rates, and a log snapshot.</p>
+
+@if (vm$ | async; as vm) {
+  @if (vm.status === 'loading') {
+    <app-loading-skeleton [count]="6" />
+  } @else if (vm.status === 'error') {
+    <app-error-panel [message]="vm.message" />
+  } @else {
+    <div class="grid">
+      <app-metric-card title="CPU" [value]="vm.data.metrics.cpu + '%'" hint="node aggregate" />
+      <app-metric-card title="Memory" [value]="vm.data.metrics.memory + '%'" hint="node aggregate" />
+      <app-metric-card title="RPS" [value]="vm.data.metrics.rps" hint="ingress requests/sec" />
+    </div>
+
+    <div class="panel table">
+      <div class="thead">
+        <div>service</div>
+        <div>health</div>
+        <div>p95 ms</div>
+        <div>error rate</div>
+      </div>
+        @for (s of vm.data.services; track s.id) {
+            <div class="trow">
+                <div class="svc">{{ s.name }}</div>
+                <div>
+                    <app-status-badge
+                            [label]="s.healthy ? 'healthy' : 'degraded'"
+                            [tone]="s.healthy ? 'good' : 'bad'"
+                    />
+                </div>
+                <div class="num">{{ s.latencyP95Ms }}</div>
+                <div class="num">{{ (s.errorRate * 100) | number : '1.2-2' }}%</div>
+            </div>
+        }
+    </div>
+
+    <app-log-stream title="system logs" [entries]="vm.data.recentLogs" />
+  }
+}

@@ -1,0 +1,31 @@
+<h1 class="h1">API Docs</h1>
+<p class="sub">Mock contracts rendered as a table. Treat these like service boundaries.</p>
+
+@if (vm$ | async; as vm) {
+  @if (vm.status === 'loading') {
+    <app-loading-skeleton [count]="3" />
+  } @else if (vm.status === 'error') {
+    <app-error-panel [message]="vm.message" />
+  } @else {
+    <div class="panel table">
+      <div class="head">
+        <div>method</div>
+        <div>path</div>
+        <div>description</div>
+        <div>request</div>
+        <div>response</div>
+      </div>
+
+        @for(e of mv.data; track $index) {
+            <div class="row">
+                <div class="m">{{ e.method }}</div>
+                <div class="p">{{ e.path }}</div>
+                <div class="d">{{ e.description }}</div>
+                <div class="s">{{ e.requestShape || '—' }}</div>
+                <div class="s">{{ e.responseShape }}</div>
+            </div>
+        }
+
+    </div>
+  }
+}

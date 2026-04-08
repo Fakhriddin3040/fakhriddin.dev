@@ -1,0 +1,49 @@
+<div class="app-shell">
+  <aside class="side panel">
+    <div class="brand">
+      <div class="mark"></div>
+      <div class="titles">
+        <div class="name">fakhriddin.io</div>
+        <div class="tag">backend portfolio / internal-tool UI</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <span class="dot"></span> Dashboard
+      </a>
+      <a routerLink="/projects" routerLinkActive="active"><span class="dot"></span> Projects</a>
+      <a routerLink="/skills" routerLinkActive="active"><span class="dot"></span> Skills</a>
+      <a routerLink="/career" routerLinkActive="active"><span class="dot"></span> Career</a>
+      <a routerLink="/api-docs" routerLinkActive="active"><span class="dot"></span> API Docs</a>
+      <a routerLink="/system" routerLinkActive="active"><span class="dot"></span> System</a>
+    </nav>
+
+    <div class="side-foot panel-subtle">
+      <div class="hint">
+        <span class="kbd">Tip</span>
+        This UI is driven by typed mock services (latency + errors simulated).
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="container">
+        <div class="topbar-row panel-subtle">
+          <div class="status-pill">
+            <span class="lamp"></span>
+            <span>ENV: local-mock</span>
+          </div>
+          <div class="spacer"></div>
+          <div class="meta">Angular standalone + RxJS</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container content">
+      <router-outlet />
+    </div>
+  </main>
+</div>
+

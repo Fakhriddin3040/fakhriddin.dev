@@ -1,0 +1,79 @@
+on:
+  repository_dispatch:
+    types:
+      - deploy
+
+env:
+  # REPOSITORY
+  BRANCH: master
+  REPOSITORY_URL: https://x-access-token:${{ secrest.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+
+  # Server
+  SSH_HOST: ${{ vars.REMOTE_HOST }}
+  SSH_USER: ${{ vars.REMOTE_USER }}
+  SSH_PORT: ${{ vars.SSH_PORT || 22 }}
+
+  # PROJECT
+  APP_ROOT: $HOME/app
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.SSH_HOST }}
+          username: ${{ env.SSH_USERNAME }}
+          port: ${{ env.SSH_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+          script: |
+            set -e
+
+            log () {
+                echo "[$(date --rfc-3339=seconds)]: $1" >> deployment.logs
+                echo $1
+            }
+
+            APP_ROOT="${{ env.APP_ROOT }}"
+            BRANCH="${{ env.BRANCH }}"
+
+            log "App dir: ${APP_ROOT}"
+            log "Branch: ${BRANCH}"
+
+            if [ ! -d $APP_ROOT ]; then
+              log "Application root '${APP_ROOT}' is not found. Exiting..."
+              exit 1;
+            elif [ ! -d "${APP_ROOT}/.git" ]; then
+              log "Application root exists but there is no '.git' dir there. Exiting ..."
+              exit 1;
+            fi
+
+            log "Changing directory to ${APP_ROOT} so, logs will be there. See ya |>o<|"
+
+            cd $APP_ROOT
+
+            log "Reset changes and reset HEAD to origin latest version of branch '${BRANCH}'"
+
+            git fetch "$REPOSITORY_URL" "$BRANCH"
+            git reset --hard FETCH_HEAD
+
+            log "Building started at $(date)" >> deployment.logs
+
+            nohup bash -c "
+              
+            nohup bash -c "
+               docker compose -f $DOCKER_COMPOSE_FILE build &&
+               docker compose -f $DOCKER_COMPOSE_FILE down &&
+               docker compose -f $DOCKER_COMPOSE_FILE up -d
+                    " >> deployment.logs 2>&1 &
+            
+            echo "Deployment pipeline completed successfully
+
+            exit 0;
+
+
+            

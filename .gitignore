@@ -72,4 +72,3 @@ baseline.json
 .env
 coverage/
 cypress/
-envs/
